@@ -2,85 +2,179 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Email Template Hub</title>
-<style>
-body { font-family: Arial; padding: 20px; background:#f5f5f5; }
-h1 { text-align:center; }
+<title>Seller Email Tool System</title>
 
-.template {
-  background:#fff;
-  padding:15px;
-  margin:15px 0;
-  border-radius:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+<style>
+body {
+  margin:0;
+  font-family: Arial;
+  display:flex;
+  height:100vh;
 }
 
-textarea {
-  width:100%;
-  height:120px;
+/* 左侧导航 */
+.sidebar {
+  width:220px;
+  background:#1f2937;
+  color:white;
+  padding:15px;
+}
+
+.sidebar h2 {
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+.menu {
   margin-top:10px;
 }
 
-button {
-  margin-top:8px;
-  padding:6px 12px;
+.menu div {
+  padding:8px;
   cursor:pointer;
+  border-radius:6px;
+}
+
+.menu div:hover {
+  background:#374151;
+}
+
+/* 主区域 */
+.main {
+  flex:1;
+  padding:20px;
+  overflow:auto;
+  background:#f5f5f5;
 }
 
 .search {
   width:100%;
   padding:10px;
-  margin-bottom:20px;
+  margin-bottom:15px;
+  border-radius:6px;
+}
+
+/* 卡片 */
+.card {
+  background:white;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.title {
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+textarea {
+  width:100%;
+  height:120px;
+}
+
+button {
+  margin-top:8px;
+  padding:6px 10px;
+  cursor:pointer;
+}
+
+.small {
+  font-size:12px;
+  color:gray;
 }
 </style>
 </head>
 
 <body>
 
-<h1>📧 Email Template Hub</h1>
+<!-- 左侧菜单 -->
+<div class="sidebar">
+<h2>📧 Email System</h2>
+
+<div class="menu">
+<div onclick="filter('all')">📂 All</div>
+<div onclick="filter('pre')">📦 Pre-sale</div>
+<div onclick="filter('ship')">🚚 Shipping</div>
+<div onclick="filter('delay')">📍 Delivery Issue</div>
+<div onclick="filter('refund')">💰 Refund</div>
+<div onclick="filter('fav')">⭐ Favorites</div>
+</div>
+</div>
+
+<!-- 主区域 -->
+<div class="main">
 
 <input class="search" placeholder="Search templates..." onkeyup="search(this.value)">
 
-<h2>📦 Order Issues</h2>
-
-<div class="template">
-<h3>Delivery Delay Apology</h3>
-<textarea>Dear customer,
-We are very sorry for the delay of your order. We are working hard to deliver it as soon as possible.</textarea>
+<!-- 模板1 -->
+<div class="card pre delay">
+<div class="title">【售前】发货时间</div>
+<div class="small">CN: 售前-发货时间</div>
+<textarea>Dear Customer,
+Delivery time is usually 2–3 weeks after shipment...</textarea>
 <button onclick="copy(this)">Copy</button>
+<button onclick="fav(this)">⭐</button>
 </div>
 
-<div class="template">
-<h3>Lost Package</h3>
-<textarea>Dear customer,
-We are sorry your package has not arrived. We will contact logistics immediately.</textarea>
+<!-- 模板2 -->
+<div class="card ship">
+<div class="title">【物流】运输延迟</div>
+<div class="small">CN: 物流-延迟</div>
+<textarea>Dear Customer,
+Your package is still in transit due to logistics delay...</textarea>
 <button onclick="copy(this)">Copy</button>
+<button onclick="fav(this)">⭐</button>
 </div>
 
-<h2>💰 Refund & Return</h2>
-
-<div class="template">
-<h3>Refund Confirmation</h3>
-<textarea>Dear customer,
-Your refund has been successfully processed and will appear shortly.</textarea>
+<!-- 模板3 -->
+<div class="card refund">
+<div class="title">【退款】全额退款</div>
+<div class="small">CN: 退款-全额</div>
+<textarea>Dear Customer,
+We have issued a full refund to your original payment method...</textarea>
 <button onclick="copy(this)">Copy</button>
+<button onclick="fav(this)">⭐</button>
+</div>
+
 </div>
 
 <script>
+
 function copy(btn){
-  let text = btn.previousElementSibling;
+  let text = btn.parentElement.querySelector("textarea");
   text.select();
   document.execCommand("copy");
-  alert("Copied!");
 }
 
-function search(v){
-  let items = document.querySelectorAll(".template");
-  items.forEach(i=>{
-    i.style.display = i.innerText.toLowerCase().includes(v.toLowerCase())
-    ? "block" : "none";
+/* 收藏 */
+function fav(btn){
+  let card = btn.parentElement;
+  card.classList.toggle("fav");
+}
+
+/* 分类过滤 */
+function filter(type){
+  let cards = document.querySelectorAll(".card");
+  cards.forEach(c=>{
+    if(type==="all") c.style.display="block";
+    else if(type==="fav") {
+      c.style.display = c.classList.contains("fav") ? "block":"none";
+    } else {
+      c.style.display = c.classList.contains(type) ? "block":"none";
+    }
   });
 }
+
+/* 搜索 */
+function search(v){
+  let cards = document.querySelectorAll(".card");
+  cards.forEach(c=>{
+    c.style.display = c.innerText.toLowerCase().includes(v.toLowerCase())
+    ? "block":"none";
+  });
+}
+
 </script>
 
 </body>
